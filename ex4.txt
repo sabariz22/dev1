@@ -1,0 +1,48 @@
+ex4 Jenkins deployment Using Docker
+
+
+#Create docker-compose.yml
+version: '3.8'
+services:
+ jenkins:
+ image: jenkins/jenkins:lts
+ ports:
+ - "8080:8080"
+ - "50000:50000"
+ volumes:
+ - jenkins_home:/var/jenkins_home
+volumes:
+ jenkins_home:
+
+
+docker compose up -d
+Get the admin password
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword(copy password)
+
+Then open Jenkins: http://localhost:8080
+
+1. Complete Jenkins setup
+o Install Suggested Plugins
+o Create admin user
+
+2. Install “HTML Publisher” plugin
+o Go to: Manage Jenkins → Plugins → Available Plugins → Search “HTML
+Publisher” → Install
+
+3. Create a Freestyle Job (Simpler than Pipeline)
+o Click New Item → Freestyle project
+o Name: simple-html-site
+o In Build Steps:
+▪ Add “Execute shell” step
+▪ Paste this simple command:
+▪ mkdir site
+▪ echo "<h1>Welcome to Jenkins Static Site</h1>" > site/index.html
+o In Post-build Actions:
+▪ Add “Publish HTML reports”
+▪ Directory: site
+▪ Index page: index.html
+▪ Report title: Simple HTML Site
+
+4. Click Build Now
+o After it finishes, open build → click Simple HTML Site on left side.
+ Your web page appears — “Welcome to
